@@ -10,8 +10,19 @@
     <servlet-class>Servlet</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>Hardware</servlet-name>
+    <servlet-class>Hardware</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>Servlet</servlet-name>
     <url-pattern>/a</url-pattern>
   </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Hardware</servlet-name>
+    <url-pattern>/hardware</url-pattern>
+  </servlet-mapping>
+
 </web-app>

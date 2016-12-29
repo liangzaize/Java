@@ -1,3 +1,5 @@
+package GsonChange;
+
 /**
  * Created by Mario.Hu on 28/12/2016.
  */
