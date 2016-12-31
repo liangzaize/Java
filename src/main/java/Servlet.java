@@ -1,12 +1,11 @@
+import GetReq.GetReq;
 import GsonChange.Xianka;
 import GsonChange.Ying;
 import GsonChange.Ying_1;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -17,14 +16,8 @@ public class Servlet extends javax.servlet.http.HttpServlet {
 
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response)
             throws javax.servlet.ServletException, IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(), "utf-8"));
-        StringBuilder sb = new StringBuilder("");
-        String temp;
-        while ((temp = br.readLine()) != null) {
-            sb.append(temp);
-        }
-        br.close();
-        String params = sb.toString();
+        GetReq getReq = new GetReq(request);
+        String params = getReq.getGet_from();
         try {
             a = gson.fromJson(params, Ying.class);
         } catch (JsonSyntaxException e) {
