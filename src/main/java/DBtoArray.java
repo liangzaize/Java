@@ -1,3 +1,7 @@
+/**
+ * Created by Mario.Hu on 28/12/2016.
+ * 把字符串分解成数组
+ */
 import java.util.ArrayList;
 
 public class DBtoArray {

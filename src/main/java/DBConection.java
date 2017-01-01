@@ -1,17 +1,19 @@
+/**
+ * Created by Mario.Hu on 28/12/2016.
+ * 与数据库建建立连接
+ */
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConection {
-    private static String USER = "root";
-    private static String PASSWORD = "hukangze";
-    private static String DB_URL = "jdbc:mysql://localhost:3306/good?verifyServerCertificate=false&useSSL=true";
-    private static String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static Connection connection = null;
 
-    //连接数据库
     public static Connection getConnection(){
-
+        Connection connection = null;
+        String USER = "root";
+        String PASSWORD = "hukangze";
+        String DB_URL = "jdbc:mysql://localhost:3306/good?verifyServerCertificate=false&useSSL=true";
+        String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
         try {
             Class.forName(DB_DRIVER);
             connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);

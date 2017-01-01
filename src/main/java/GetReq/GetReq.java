@@ -1,5 +1,9 @@
 package GetReq;
 
+/**
+ * Created by Mario.Hu on 28/12/2016.
+ * 获取数据流的封装
+ */
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;

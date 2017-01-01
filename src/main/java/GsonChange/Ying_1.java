@@ -1,5 +1,9 @@
 package GsonChange;
 
+/**
+ * Created by Mario.Hu on 28/12/2016.
+ * json:{"Type":ArrayList}
+ */
 import java.util.ArrayList;
 
 public class Ying_1 {

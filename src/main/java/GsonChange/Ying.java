@@ -1,5 +1,9 @@
 package GsonChange;
 
+/**
+ * Created by Mario.Hu on 28/12/2016.
+ * 用来分解接收到的json串格式
+ */
 public class Ying {
 
     private String Type;
