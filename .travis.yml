@@ -1,11 +1,7 @@
  os:
-    - linux
     - osx
     
 language: java
-branches:
-  except:
-    - /.*test$/
 
 env:
   global:
@@ -26,31 +22,9 @@ matrix:
        env: CUSTOM_JDK="oraclejdk7"
      - os: osx
        env: CUSTOM_JDK="openjdk7"
-     # On Linux, run with specific JDKs only.
-     - os: linux
-       env: CUSTOM_JDK="default"
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export JAVA_HOME=$(/usr/libexec/java_home); fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then jdk_switcher use "$CUSTOM_JDK"; fi
-
-before_script: 
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install build-essential automake1.10 libtool; fi
 
 script: 
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mvn install -P osx64; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mvn install -P linux64; fi
-
-after_success:
-  - mvn -P linux64 jacoco:report coveralls:report
-
-after_failure:
-  - cat lmdbjni-linux64/target/surefire-reports/*.txt
-
-require "rake/testtask"
-
-Rake::TestTask.new do |t|
-  t.pattern = "test/**/*_test.rb"
-end
-
-task default: :test
