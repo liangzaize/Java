@@ -15,7 +15,7 @@ public class Zol {
 
     public void Zol_Get(String urll) {
 
-        int responsecode, num = 1, num_1 = 0;
+        int responsecode, num = 1, num_1 = 1;
         String line, line_1;
 
         try {
@@ -31,7 +31,7 @@ public class Zol {
                         outZol.add(line);
                         num++;
                     }
-                    if (line.contains("#s-" + num_1)) {
+                    if (line.contains("newPmName_" + num_1)) {
                         line_1 = line.replaceAll("\\<.*?>", "");
                         line_1 = line_1.replaceAll(" ", "");
                         outZol_1.add(line_1);
