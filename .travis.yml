@@ -46,3 +46,11 @@ after_success:
 
 after_failure:
   - cat lmdbjni-linux64/target/surefire-reports/*.txt
+
+require "rake/testtask"
+
+Rake::TestTask.new do |t|
+  t.pattern = "test/**/*_test.rb"
+end
+
+task default: :test
