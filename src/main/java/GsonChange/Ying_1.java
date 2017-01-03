@@ -13,14 +13,6 @@ public class Ying_1 {
     public Ying_1(ArrayList type){
         super();
         this.Type = type;
-
     }
 
-    public void setType(ArrayList type) {
-        Type = type;
-    }
-
-    public ArrayList getType() {
-        return Type;
-    }
 }

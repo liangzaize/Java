@@ -15,6 +15,11 @@
     <servlet-class>Hardware</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>Sign</servlet-name>
+    <servlet-class>Sign</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>Servlet</servlet-name>
     <url-pattern>/a</url-pattern>
@@ -23,6 +28,11 @@
   <servlet-mapping>
     <servlet-name>Hardware</servlet-name>
     <url-pattern>/hardware</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Sign</servlet-name>
+    <url-pattern>/sign</url-pattern>
   </servlet-mapping>
 
 </web-app>

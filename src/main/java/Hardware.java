@@ -18,6 +18,7 @@ public class Hardware extends javax.servlet.http.HttpServlet {
 
     private Ying a;
     private Gson gson = new Gson();
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GetReq getReq = new GetReq(req);
