@@ -7,11 +7,3 @@ notifications:
   
 jdk:
   - oraclejdk8
-  
-before_install:
-  - mvn install -Dmaven.javadoc.skip=true
-  
-script:
-#  - "echo skipped" 
-  - mvn install -Dmaven.javadoc.skip=true
-# - mvn deploy
