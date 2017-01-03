@@ -6,4 +6,4 @@ notifications:
   sudo: false
   
   
-install: cd wxapi && mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
