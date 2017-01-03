@@ -8,4 +8,5 @@ install:
   - git clone --depth=1 https://github.com/n1k0/casperjs.git /tmp/casperjs
   - export PATH=$PATH:/tmp/casperjs/bin
 script:
-  - mvn clean install -Pqulice --batch-mode --errors
+  - mvn clean install --batch-mode --errors  
+  - mvn verify -Pits --batch-mode --errors
