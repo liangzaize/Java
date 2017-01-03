@@ -6,4 +6,4 @@ notifications:
   sudo: false
   
 jdk:
-  - openjdk8
+  - openjdk7
