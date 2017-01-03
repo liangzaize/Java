@@ -5,7 +5,5 @@ cache:
   directories:
     - $HOME/.m2
 install:
-  - sudo apt-get update -y
-  - sudo apt-get install -y phantomjs
   - git clone --depth=1 https://github.com/liangzaize/Java.git /tmp/casperjs
   - export PATH=$PATH:/tmp/casperjs/bin
