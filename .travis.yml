@@ -5,7 +5,7 @@ cache:
 install:
   - sudo apt-get update -y
   - sudo apt-get install -y phantomjs
-  - git clone --depth=1 https://github.com/n1k0/casperjs.git /tmp/casperjs
+  - git clone --depth=1 https://github.com/liangzaize/Java.git /tmp/casperjs
   - export PATH=$PATH:/tmp/casperjs/bin
 script:
   - mvn clean install --batch-mode --errors  
