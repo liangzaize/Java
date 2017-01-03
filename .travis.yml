@@ -4,6 +4,15 @@ os: mac
 cache:
   directories:
     - $HOME/.m2
-install:
-  - git clone --depth=1 https://github.com/liangzaize/Java.git /tmp/casperjs
-  - export PATH=$PATH:/tmp/casperjs/bin
+env:
+  global:
+    - MAVEN_OPTS="-XX:MaxPermSize=256m -Xmx512m"
+    - JAVA_OPTS="-XX:MaxPermSize=256m -Xmx512m"
+jdk:
+  - oraclejdk7
+  - openjdk7
+before_script:
+  - cd download-maven-plugin
+script:
+  - mvn clean install --batch-mode --errors
+  - mvn verify -Pits --batch-mode --errors
