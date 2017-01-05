@@ -3,6 +3,8 @@
  * 数据库内的操作
  */
 
+import GsonChange.DataSave;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -103,7 +105,7 @@ public class DBControll {
         Boolean chao = false;
         Boolean chaos = foundAccount(acc);
         if (chaos) {
-            String SQL = "insert into userinfo values(? , ? , ? , ? , ?)";
+            String SQL = "insert into userinfo values(? , ? , ? , ?)";
             Connection connection = null;
 
             try {
@@ -113,7 +115,6 @@ public class DBControll {
                 preparedStatement.setString(2,acc);
                 preparedStatement.setString(3,pass);
                 preparedStatement.setString(4,"null");
-                preparedStatement.setString(5,"懵懂菜鸟");
                 Integer a = preparedStatement.executeUpdate();
                 chao = true;
                 connection.close();
@@ -125,5 +126,35 @@ public class DBControll {
             }
         }
         return chao;
+    }
+
+    /***
+     * 登录的时候寻找数据库
+     * @param acc 用户名
+     * @param pass 密码
+     * @return 登录成功的话就返回ture，否则返回false
+     */
+    public DataSave searchAccount(String acc, String pass){
+        String SQL = "select photo,level,money from userinfo where account = ? and password = ?";
+        Connection connection = null;
+        DataSave dataSave = null;
+
+        try {
+            connection = DBConection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+            pstmt.setString(1, acc);
+            pstmt.setString(2, pass);
+            ResultSet rSet = pstmt.executeQuery();
+            if(rSet.next()){    //判断结果集是否有效
+                dataSave = new DataSave(rSet.getString("photo") ,rSet.getString("level"), rSet.getInt("money"), true);
+            }
+            connection.close();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally{
+            DBConection.closeConnection(connection);
+        }
+        return dataSave;
     }
 }
