@@ -7,3 +7,6 @@ notifications:
   
 jdk:
   - openjdk7
+
+install:
+  - mvn install --quiet --batch-mode
