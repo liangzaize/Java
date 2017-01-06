@@ -20,4 +20,7 @@ public class DataSave {
         this.bingo = b;
     }
 
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 }

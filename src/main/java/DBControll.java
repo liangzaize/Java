@@ -19,7 +19,7 @@ public class DBControll {
      * @param size 硬件的型号
      * @return 这个型号有什么厂商生产的
      */
-    public String requsetxianka(String size){
+    public String requsetxianka(String size) {
         String SQL = "select company from xianka where size = ?";
         Connection connection = null;
         try {
@@ -27,14 +27,14 @@ public class DBControll {
             PreparedStatement pstmt = connection.prepareStatement(SQL);
             pstmt.setString(1, size);   //这里的意思将用户名和密码填到SQL语句的问号处
             ResultSet rSet = pstmt.executeQuery();  //得到数据库的查询结果,一个数据集
-            if(rSet.next()){    //判断结果集是否有效
+            if (rSet.next()) {    //判断结果集是否有效
                 out = rSet.getString("company");
             }
             connection.close();
             pstmt.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally{
+        } finally {
             DBConection.closeConnection(connection);
         }
         return out;
@@ -46,7 +46,7 @@ public class DBControll {
      * @param company 硬件的厂商
      * @return 对应具体的参数网址
      */
-    public String requseturl(String size, String company){
+    public String requseturl(String size, String company) {
         String SQL = "select url from hardurl where size = ? and company = ?";
         Connection connection = null;
         try {
@@ -55,14 +55,14 @@ public class DBControll {
             pstmt.setString(1, size);
             pstmt.setString(2, company);
             ResultSet rSet = pstmt.executeQuery();
-            if(rSet.next()){    //判断结果集是否有效
+            if (rSet.next()) {    //判断结果集是否有效
                 out = rSet.getString("url");
             }
             connection.close();
             pstmt.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally{
+        } finally {
             DBConection.closeConnection(connection);
         }
         return out;
@@ -73,23 +73,23 @@ public class DBControll {
      * @param acc 账号
      * @return 如果账号不存在就返回false，否则返回true
      */
-    private Boolean foundAccount(String acc){
+    private Boolean foundAccount(String acc) {
         Boolean si = true;
         String SQL = "select account from userinfo where account = ?";
         Connection connection = null;
         try {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
-            pstmt.setString(1,acc);
+            pstmt.setString(1, acc);
             ResultSet rSet = pstmt.executeQuery();
-            if(rSet.next()){    //判断结果集是否有效
+            if (rSet.next()) {    //判断结果集是否有效
                 si = false;
             }
             connection.close();
             pstmt.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally{
+        } finally {
             DBConection.closeConnection(connection);
         }
         return si;
@@ -101,7 +101,7 @@ public class DBControll {
      * @param pass 密码
      * @return ture的话就是注册成功，false就是失败了
      */
-    public Boolean putAccount(String acc, String pass){
+    public Boolean putAccount(String acc, String pass) {
         Boolean chao = false;
         Boolean chaos = foundAccount(acc);
         if (chaos) {
@@ -111,10 +111,10 @@ public class DBControll {
             try {
                 connection = DBConection.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-                preparedStatement.setInt(1,0);
-                preparedStatement.setString(2,acc);
-                preparedStatement.setString(3,pass);
-                preparedStatement.setString(4,"null");
+                preparedStatement.setInt(1, 0);
+                preparedStatement.setString(2, acc);
+                preparedStatement.setString(3, pass);
+                preparedStatement.setString(4, "null");
                 Integer a = preparedStatement.executeUpdate();
                 chao = true;
                 connection.close();
@@ -134,7 +134,7 @@ public class DBControll {
      * @param pass 密码
      * @return 登录成功的话就返回ture，否则返回false
      */
-    public DataSave searchAccount(String acc, String pass){
+    public DataSave searchAccount(String acc, String pass) {
         String SQL = "select photo,level,money from userinfo where account = ? and password = ?";
         Connection connection = null;
         DataSave dataSave = null;
@@ -145,16 +145,46 @@ public class DBControll {
             pstmt.setString(1, acc);
             pstmt.setString(2, pass);
             ResultSet rSet = pstmt.executeQuery();
-            if(rSet.next()){    //判断结果集是否有效
-                dataSave = new DataSave(rSet.getString("photo") ,rSet.getString("level"), rSet.getInt("money"), true);
+            if (rSet.next()) {    //判断结果集是否有效
+                dataSave = new DataSave(rSet.getString("photo"), rSet.getString("level"), rSet.getInt("money"), true);
             }
             connection.close();
             pstmt.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally{
+        } finally {
             DBConection.closeConnection(connection);
         }
         return dataSave;
+    }
+
+    /***
+     * 放入用户的照片base64数据到文件中，数据库保存文件的url路径
+     * @param image_url 头像数据文件路径
+     * @param user_name 用户的名字
+     * @return 如果true就是放成功，如果false就是错误的
+     */
+    public Boolean put_photo(String image_url, String user_name) {
+        String SQL = "update userinfo set photo = ? where account = ?";
+        Connection connection = null;
+        Boolean F = false;
+
+        try {
+            connection = DBConection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setString(1, image_url);
+            preparedStatement.setString(2, user_name);
+            Integer a = preparedStatement.executeUpdate();
+            if (a > 0) {
+                F = true;
+            }
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConection.closeConnection(connection);
+        }
+        return F;
     }
 }

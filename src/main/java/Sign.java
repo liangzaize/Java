@@ -1,6 +1,7 @@
 import GetReq.GetReq;
 import GsonChange.Result;
 import GsonChange.Ying;
+import Session.MySessionContext;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -25,7 +26,9 @@ public class Sign extends javax.servlet.http.HttpServlet{
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
         Boolean returnSign = dbControll.putAccount(a.getType(),a.getFa());
         if (returnSign) {
-            req.getSession().setAttribute(a.getType(),a.getType());
+            req.getSession().setAttribute(req.getSession().getId(),a.getType());
+            MySessionContext.AddSession(req.getSession());
+            resp.addHeader("Set-cookie",req.getSession().getId());
         }
         Result result = new Result(returnSign);
         String json = gson.toJson(result);
