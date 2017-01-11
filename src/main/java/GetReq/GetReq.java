@@ -16,16 +16,12 @@ public class GetReq {
 
     public GetReq (HttpServletRequest req){
         super();
-        this.get_from = req;
+        this.get_from = req;    //从客户端接收到的HttpServletRequest数据放在这
     }
 
     public String getGet_from() {
         getorgo();
         return from;
-    }
-
-    public void setGet_from(HttpServletRequest get_from) {
-        this.get_from = get_from;
     }
 
     private void getorgo(){
@@ -37,7 +33,7 @@ public class GetReq {
                 sb.append(temp);
             }
             br.close();
-            this.from = sb.toString();
+            this.from = sb.toString();  //把接收的信息转换成string类型
         } catch (IOException e) {
             e.printStackTrace();
         }

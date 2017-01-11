@@ -26,21 +26,17 @@ public class Hardware extends javax.servlet.http.HttpServlet {
         String te = getReq.getGet_from();
         a = gson.fromJson(te, Ying.class);
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        String xianka = dbControll.requseturl(a.getType(),a.getFa());
+        String xianka = dbControll.requseturl(a.getType(),a.getFa());   //把账号和密码放进数据库
         zol.Zol_Get(xianka);    //把地址传去抓代码
         ArrayList a = zol.getOutZol();  //详细信息
         ArrayList b = zol.getOutZol_1();    //类别信息
         Ying_2 ying_2 = new Ying_2(a,b);
         String jsonObject = gson.toJson(ying_2);    //生成json
+        System.out.println(jsonObject);
         resp.setCharacterEncoding("utf-8"); //编码
         PrintWriter out = resp.getWriter(); //发送
         out.print(jsonObject);
         out.flush();
         out.close();
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
     }
 }

@@ -1,6 +1,7 @@
 package GsonChange;
 
 /**
+ * 接收一个数组，发送一个数组
  * Created by Mario.Hu on 28/12/2016.
  * json:{"Type":ArrayList}
  */

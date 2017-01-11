@@ -34,6 +34,16 @@
     <servlet-class>Chance</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>News</servlet-name>
+    <servlet-class>News</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>NewsData</servlet-name>
+    <servlet-class>NewsData</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>Servlet</servlet-name>
     <url-pattern>/a</url-pattern>
@@ -57,5 +67,15 @@
   <servlet-mapping>
     <servlet-name>Chance</servlet-name>
     <url-pattern>/chance</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>News</servlet-name>
+    <url-pattern>/news</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>NewsData</servlet-name>
+    <url-pattern>/newsdata</url-pattern>
   </servlet-mapping>
 </web-app>

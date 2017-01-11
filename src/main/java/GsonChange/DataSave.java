@@ -1,8 +1,8 @@
 package GsonChange;
 
 /**
- * 多个不同类型返回对象
- * json:{"photo":String,"level":String,"money":int}
+ * 用于登录时返回用户的信息：头像路径、登录、金钱、登录是否成功
+ * json:{"photo":String,"level":String,"money":int,"bingo":boolean}
  * Created by Mario.Hu on 05/01/2017.
  */
 public class DataSave {

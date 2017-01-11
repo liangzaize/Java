@@ -1,4 +1,5 @@
 import GetReq.GetReq;
+import GsonChange.DataSave;
 import GsonChange.Result;
 import GsonChange.Ying;
 import Session.MySessionContext;
@@ -25,8 +26,8 @@ public class Sign extends javax.servlet.http.HttpServlet{
         a = gson.fromJson(te, Ying.class);
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
         Boolean returnSign = dbControll.putAccount(a.getType(),a.getFa());
-        if (returnSign) {
-            req.getSession().setAttribute(req.getSession().getId(),a.getType());
+        if (returnSign) {   //如果注册成功
+            req.getSession().setAttribute(req.getSession().getId(),a.getType());    //为该用户新建一个session
             MySessionContext.AddSession(req.getSession());
             resp.addHeader("Set-cookie",req.getSession().getId());
         }

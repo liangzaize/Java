@@ -4,15 +4,19 @@
  */
 
 import GsonChange.DataSave;
+import GsonChange.Ying_2;
+import GsonChange.Ying_3;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DBControll {
 
     private String out = "";
+    private Connection connection = null;
 
     /***
      * 问数据库拿型号对应的所有厂商
@@ -21,7 +25,7 @@ public class DBControll {
      */
     public String requsetxianka(String size) {
         String SQL = "select company from xianka where size = ?";
-        Connection connection = null;
+
         try {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
@@ -48,7 +52,6 @@ public class DBControll {
      */
     public String requseturl(String size, String company) {
         String SQL = "select url from hardurl where size = ? and company = ?";
-        Connection connection = null;
         try {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
@@ -76,7 +79,6 @@ public class DBControll {
     private Boolean foundAccount(String acc) {
         Boolean si = true;
         String SQL = "select account from userinfo where account = ?";
-        Connection connection = null;
         try {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
@@ -106,7 +108,6 @@ public class DBControll {
         Boolean chaos = foundAccount(acc);
         if (chaos) {
             String SQL = "insert into userinfo values(? , ? , ? , ?)";
-            Connection connection = null;
 
             try {
                 connection = DBConection.getConnection();
@@ -136,7 +137,6 @@ public class DBControll {
      */
     public DataSave searchAccount(String acc, String pass) {
         String SQL = "select photo,level,money from userinfo where account = ? and password = ?";
-        Connection connection = null;
         DataSave dataSave = null;
 
         try {
@@ -166,7 +166,6 @@ public class DBControll {
      */
     public Boolean put_photo(String image_url, String user_name) {
         String SQL = "update userinfo set photo = ? where account = ?";
-        Connection connection = null;
         Boolean F = false;
 
         try {
@@ -186,5 +185,66 @@ public class DBControll {
             DBConection.closeConnection(connection);
         }
         return F;
+    }
+
+    /***
+     * 获取新闻的列表数据
+     * @param number 这一次想要获取那个范围以内的数据
+     * @return 新闻的标题、摘要和图片
+     */
+    public Ying_3 get_news_summarize(int number){
+        String SQL = "select title,summarize,photourl from news";
+        int counts = number - 10;
+        Ying_3 y = null;
+        ArrayList t = new ArrayList();
+        ArrayList s = new ArrayList();
+        ArrayList p = new ArrayList();
+
+        try {
+            connection = DBConection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+            ResultSet rSet = pstmt.executeQuery();
+            while (counts != number) {
+                if (rSet.next()) {    //判断结果集是否有效
+                    t.add(rSet.getString("title"));
+                    s.add(rSet.getString("summarize"));
+                    p.add(rSet.getString("photourl"));
+                    counts += 1;
+                }
+                else {
+                    break;
+                }
+            }
+            y = new Ying_3(t,s,p);
+            connection.close();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBConection.closeConnection(connection);
+        }
+        return y;
+    }
+
+    public String get_news(String title, String data){
+        String SQL = "select jsp from news where title = ? and summarize = ?";
+        String jsp = "";
+        try {
+            connection = DBConection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+            pstmt.setString(1, title);
+            pstmt.setString(2, data);
+            ResultSet rSet = pstmt.executeQuery();
+                if (rSet.next()) {    //判断结果集是否有效
+                    jsp = rSet.getString("jsp");
+                }
+            connection.close();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBConection.closeConnection(connection);
+        }
+        return jsp;
     }
 }

@@ -27,17 +27,17 @@ public class Login extends HttpServlet{
         String te = getReq.getGet_from();
         a = gson.fromJson(te, Ying.class);
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        DataSave dataSave = dbControll.searchAccount(a.getType(),a.getFa());
+        DataSave dataSave = dbControll.searchAccount(a.getType(),a.getFa());    //放入账号密码得到用户的各种资料
         if (dataSave != null) {
             String name = a.getType();
             String pathname = "/Users/Mario.Hu/Documents/" + name + ".txt";
             File file = new File(pathname);
-            dataSave.setPhoto(file2String(file,"utf-8"));
+            dataSave.setPhoto(file2String(file));   //把图片数据替换到dataSave中
             String jsonObject = gson.toJson(dataSave);
             resp.setCharacterEncoding("utf-8"); //编码
-            req.getSession().setAttribute(req.getSession().getId(),name);
-            MySessionContext.AddSession(req.getSession());
-            resp.addHeader("Set-cookie",req.getSession().getId());
+            req.getSession().setAttribute(req.getSession().getId(),name);   //登陆后如果没有session则新建一个
+            MySessionContext.AddSession(req.getSession());  //把该对象放进自建的管理器中
+            resp.addHeader("Set-cookie",req.getSession().getId());  //把sessionid放进cookie中发送给客户端
             PrintWriter out = resp.getWriter(); //发送
             out.print(jsonObject);
             out.flush();
@@ -45,18 +45,14 @@ public class Login extends HttpServlet{
         }
     }
 
-    public static String file2String(File file, String encoding) {
+    public static String file2String(File file) {
         InputStreamReader reader = null;
         StringWriter writer = new StringWriter();
         try {
-            if (encoding == null || "".equals(encoding.trim())) {
-                reader = new InputStreamReader(new FileInputStream(file), encoding);
-            } else {
-                reader = new InputStreamReader(new FileInputStream(file));
-            }
+            reader = new InputStreamReader(new FileInputStream(file), "utf-8");
             //将输入流写入输出流
             char[] buffer = new char[DEFAULT_BUFFER_SIZE];
-            int n = 0;
+            int n;
             while (-1 != (n = reader.read(buffer))) {
                 writer.write(buffer, 0, n);
             }
@@ -71,9 +67,6 @@ public class Login extends HttpServlet{
                     e.printStackTrace();
                 }
         }
-        //返回转换结果
-        if (writer != null)
-            return writer.toString();
-        else return null;
+        return writer.toString();
     }
 }

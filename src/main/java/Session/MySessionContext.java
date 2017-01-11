@@ -4,12 +4,12 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 
 /**
- * 自己建一个管理session
+ * 利用哈希Map自建一个session管理器
  * Created by Mario.Hu on 06/01/2017.
  */
 public class MySessionContext {
 
-    private static HashMap mymap = new HashMap();
+    private static HashMap mymap = new HashMap();   //设置一个静态的HashMap
     public static synchronized void AddSession(HttpSession session) {
         if (session != null) {
             mymap.put(session.getId(), session);
