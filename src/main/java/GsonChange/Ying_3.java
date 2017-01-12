@@ -11,12 +11,14 @@ public class Ying_3 {
     private ArrayList Title;
     private ArrayList Summarize;
     private ArrayList Image;
+    private Boolean c;
 
-    public Ying_3(ArrayList title,ArrayList summarize,ArrayList image){
+    public Ying_3(ArrayList title,ArrayList summarize,ArrayList image,Boolean in){
         super();
         this.Title = title;
         this.Summarize = summarize;
         this.Image = image;
+        this.c = in;
     }
 
 }

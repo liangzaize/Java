@@ -107,17 +107,20 @@ public class DBControll {
         Boolean chao = false;
         Boolean chaos = foundAccount(acc);
         if (chaos) {
-            String SQL = "insert into userinfo values(? , ? , ? , ?)";
+            String SQL = "insert into userinfo values( ? , ? , ? , ? , ? )";
 
             try {
                 connection = DBConection.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-                preparedStatement.setInt(1, 0);
-                preparedStatement.setString(2, acc);
-                preparedStatement.setString(3, pass);
-                preparedStatement.setString(4, "null");
+                preparedStatement.setString(1, acc);
+                preparedStatement.setString(2, pass);
+                preparedStatement.setString(3, "null");
+                preparedStatement.setString(4, "懵懂菜鸟");
+                preparedStatement.setInt(5, 0);
                 Integer a = preparedStatement.executeUpdate();
-                chao = true;
+                if (a > 0) {
+                    chao = true;
+                }
                 connection.close();
                 preparedStatement.close();
             } catch (SQLException e) {
@@ -193,18 +196,22 @@ public class DBControll {
      * @return 新闻的标题、摘要和图片
      */
     public Ying_3 get_news_summarize(int number){
-        String SQL = "select title,summarize,photourl from news";
-        int counts = number - 10;
+        String SQL = "select title,summarize,photourl from news where uid = ?";
+        int counts = number - 9;
         Ying_3 y = null;
         ArrayList t = new ArrayList();
         ArrayList s = new ArrayList();
         ArrayList p = new ArrayList();
-
+        int count = getCounts();
         try {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
-            ResultSet rSet = pstmt.executeQuery();
+            if (counts > count){
+                return new Ying_3(null,null,null,false);
+            }
             while (counts != number) {
+                pstmt.setInt(1, counts);
+                ResultSet rSet = pstmt.executeQuery();
                 if (rSet.next()) {    //判断结果集是否有效
                     t.add(rSet.getString("title"));
                     s.add(rSet.getString("summarize"));
@@ -215,7 +222,12 @@ public class DBControll {
                     break;
                 }
             }
-            y = new Ying_3(t,s,p);
+
+            if (counts > count){
+                y = new Ying_3(t,s,p,false);
+            } else {
+                y = new Ying_3(t,s,p,true);
+            }
             connection.close();
             pstmt.close();
         } catch (Exception e) {
@@ -224,6 +236,26 @@ public class DBControll {
             DBConection.closeConnection(connection);
         }
         return y;
+    }
+
+    private Integer getCounts (){
+        String SQL = "select uid from news";
+        int number = 0;
+        try {
+            connection = DBConection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+                ResultSet rSet = pstmt.executeQuery();
+                while (rSet.next()) {    //判断结果集是否有效
+                    number += 1;
+                }
+            connection.close();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBConection.closeConnection(connection);
+        }
+        return number;
     }
 
     public String get_news(String title, String data){
