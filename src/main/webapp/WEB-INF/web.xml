@@ -44,6 +44,11 @@
     <servlet-class>NewsData</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>Talk</servlet-name>
+    <servlet-class>Talk</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>Servlet</servlet-name>
     <url-pattern>/a</url-pattern>
@@ -77,5 +82,10 @@
   <servlet-mapping>
     <servlet-name>NewsData</servlet-name>
     <url-pattern>/newsdata</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Talk</servlet-name>
+    <url-pattern>/talk</url-pattern>
   </servlet-mapping>
 </web-app>

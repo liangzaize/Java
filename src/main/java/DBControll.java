@@ -6,6 +6,7 @@
 import GsonChange.DataSave;
 import GsonChange.Ying_2;
 import GsonChange.Ying_3;
+import GsonChange.Ying_4;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -202,7 +203,7 @@ public class DBControll {
         ArrayList t = new ArrayList();
         ArrayList s = new ArrayList();
         ArrayList p = new ArrayList();
-        int count = getCounts();
+        int count = getCounts("select uid from news");
         try {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
@@ -238,8 +239,7 @@ public class DBControll {
         return y;
     }
 
-    private Integer getCounts (){
-        String SQL = "select uid from news";
+    private Integer getCounts (String SQL){
         int number = 0;
         try {
             connection = DBConection.getConnection();
@@ -258,18 +258,60 @@ public class DBControll {
         return number;
     }
 
-    public String get_news(String title, String data){
-        String SQL = "select jsp from news where title = ? and summarize = ?";
-        String jsp = "";
+//    public String get_news(String title, String data){
+//        String SQL = "select jsp from news where title = ? and summarize = ?";
+//        String jsp = "";
+//        try {
+//            connection = DBConection.getConnection();
+//            PreparedStatement pstmt = connection.prepareStatement(SQL);
+//            pstmt.setString(1, title);
+//            pstmt.setString(2, data);
+//            ResultSet rSet = pstmt.executeQuery();
+//                if (rSet.next()) {    //判断结果集是否有效
+//                    jsp = rSet.getString("jsp");
+//                }
+//            connection.close();
+//            pstmt.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            DBConection.closeConnection(connection);
+//        }
+//        return jsp;
+//    }
+
+    public Ying_4 getTalk(int number){
+        String SQL = "select titlename,postname,counts from talkview where id = ?";
+        int counts = number - 9;
+        Ying_4 y = null;
+        ArrayList t = new ArrayList();
+        ArrayList s = new ArrayList();
+        ArrayList p = new ArrayList();
+        int count = getCounts("select id from talkview");
         try {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
-            pstmt.setString(1, title);
-            pstmt.setString(2, data);
-            ResultSet rSet = pstmt.executeQuery();
+            if (counts > count){
+                return new Ying_4(null,null,null,null,false);
+            }
+            while (counts != number) {
+                pstmt.setInt(1, counts);
+                ResultSet rSet = pstmt.executeQuery();
                 if (rSet.next()) {    //判断结果集是否有效
-                    jsp = rSet.getString("jsp");
+                    t.add(rSet.getString("titlename"));
+                    s.add(rSet.getString("postname"));
+                    p.add(rSet.getInt("counts"));
+                    counts += 1;
                 }
+                else {
+                    break;
+                }
+            }
+            if (counts > count){
+                y = new Ying_4(t,s,p,null,false);
+            } else {
+                y = new Ying_4(t,s,p,null,true);
+            }
             connection.close();
             pstmt.close();
         } catch (Exception e) {
@@ -277,6 +319,6 @@ public class DBControll {
         } finally {
             DBConection.closeConnection(connection);
         }
-        return jsp;
+        return y;
     }
 }
