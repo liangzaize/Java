@@ -39,7 +39,6 @@ public class Talk extends HttpServlet {
                 y = dbControll.getTalk(a.getCount());
             }
             String jsonObject = gson.toJson(y);
-            System.out.println(jsonObject);
             resp.setCharacterEncoding("utf-8"); //编码
             PrintWriter out = resp.getWriter(); //发送
             out.print(jsonObject);

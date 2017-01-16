@@ -49,6 +49,11 @@
     <servlet-class>Talk</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>Post</servlet-name>
+    <servlet-class>Post</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>Servlet</servlet-name>
     <url-pattern>/a</url-pattern>
@@ -87,5 +92,10 @@
   <servlet-mapping>
     <servlet-name>Talk</servlet-name>
     <url-pattern>/talk</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Post</servlet-name>
+    <url-pattern>/post</url-pattern>
   </servlet-mapping>
 </web-app>
