@@ -25,7 +25,7 @@ public class Talk extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GetReq getReq = new GetReq(req);
         String te = getReq.getGet_from();
-        Ying_4 y = null;
+        Ying_4 y;
         a = gson.fromJson(te, Yao.class);
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
         if (a.getType().equals("hukangze")){

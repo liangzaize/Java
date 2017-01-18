@@ -3,15 +3,9 @@
  * 数据库内的操作
  */
 
-import GsonChange.DataSave;
-import GsonChange.Ying_2;
-import GsonChange.Ying_3;
-import GsonChange.Ying_4;
+import GsonChange.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class DBControll {
@@ -280,6 +274,11 @@ public class DBControll {
 //        return jsp;
 //    }
 
+    /***
+     * 获取论坛列表
+     * @param number 这一次要向数据库提取哪个范围的列表
+     * @return 标题、名字、数字、判断是否已到底
+     */
     public Ying_4 getTalk(int number){
         String SQL = "select titlename,postname,counts from talkview where id = ?";
         int counts = number - 9;
@@ -320,5 +319,58 @@ public class DBControll {
             DBConection.closeConnection(connection);
         }
         return y;
+    }
+
+    /***
+     * 发表帖子
+     * @param title 帖子的标题
+     * @param con 帖子的正文
+     * @param name 用户名字
+     * @return 保存成功返回true
+     */
+    public Boolean posttalk(String title, String con, String name, long time){
+        connection = DBConection.getConnection();
+        Statement stmt = null;
+        Boolean r = true;
+        String SQL_1 = "insert into talkview(titlename,postname,posttime) values(? , ? , ?)";
+        String SQL_2 = "insert into maintalk(title,text,username,talk_id) values(? , ? , ? , ?)";
+        String SQL_3 = "SELECT id FROM talkview order by id DESC LIMIT 1";
+        try {
+            connection.setAutoCommit(false);// 更改JDBC事务的默认提交方式
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_1);
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, name);
+            preparedStatement.setLong(3,time);
+            Integer a = preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement(SQL_3);
+            ResultSet result = preparedStatement.executeQuery();
+            Integer id = 0; // This will be the id you will add on your talk_id
+            if(result.next()) {
+                id = result.getInt(1);
+            }
+
+            preparedStatement = connection.prepareStatement(SQL_2);
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, con);
+            preparedStatement.setString(3, name);
+            preparedStatement.setInt(4, id);
+            Integer b = preparedStatement.executeUpdate();
+            connection.commit();//提交JDBC事务
+            connection.setAutoCommit(true);// 恢复JDBC事务的默认提交方式
+            } catch (SQLException sqle) {
+            try {
+                connection.rollback();//回滚JDBC事务
+                stmt.close();
+                connection.close();
+                r = false;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            sqle.printStackTrace();
+            } finally {
+            DBConection.closeConnection(connection);
+        }
+        return r;
     }
 }

@@ -33,7 +33,6 @@ public class Sign extends javax.servlet.http.HttpServlet{
         }
         Result result = new Result(returnSign);
         String json = gson.toJson(result);
-        System.out.println(json);
         resp.setCharacterEncoding("utf-8"); //编码
         PrintWriter out = resp.getWriter(); //发送
         out.print(json);
