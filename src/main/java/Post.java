@@ -31,7 +31,7 @@ public class Post extends HttpServlet {
         String name = session.getAttribute(session.getId()).toString(); //获取该session对象保存的用户名
         long millis = System.currentTimeMillis();
         DBControll d = new DBControll();
-        Boolean r = d.posttalk(a.getType(),a.getFa(),name,millis);
+        Boolean r = d.posttalk(a.getType(),a.getFa(),name,millis/1000);
         Result result = new Result(r);
         String json = gson.toJson(result);
         resp.setCharacterEncoding("utf-8"); //编码

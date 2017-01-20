@@ -12,13 +12,15 @@ public class Ying_4 {
     private ArrayList Name;
     private ArrayList Number;
     private String Account;
+    private ArrayList Posttime;
     private Boolean c;
 
-    public Ying_4 (ArrayList title, ArrayList name, ArrayList number, String account, Boolean ca){
+    public Ying_4 (ArrayList title, ArrayList name, ArrayList number, String account,ArrayList t, Boolean ca){
         this.Title = title;
         this.Name = name;
         this.Number = number;
         this.Account = account;
+        this.Posttime = t;
         this.c = ca;
     }
 

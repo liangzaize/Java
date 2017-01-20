@@ -7,6 +7,7 @@ import GsonChange.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DBControll {
 
@@ -233,6 +234,11 @@ public class DBControll {
         return y;
     }
 
+    /***
+     * 获取指定数据表有多少行数据
+     * @param SQL 查询的语句
+     * @return 数量
+     */
     private Integer getCounts (String SQL){
         int number = 0;
         try {
@@ -242,6 +248,27 @@ public class DBControll {
                 while (rSet.next()) {    //判断结果集是否有效
                     number += 1;
                 }
+            connection.close();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBConection.closeConnection(connection);
+        }
+        return number;
+    }
+
+    private Integer gettotal (String SQL,String time,String name){
+        int number = 0;
+        try {
+            connection = DBConection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+            pstmt.setString(1,time);
+            pstmt.setString(2,name);
+            ResultSet rSet = pstmt.executeQuery();
+            while (rSet.next()) {    //判断结果集是否有效
+                number += 1;
+            }
             connection.close();
             pstmt.close();
         } catch (Exception e) {
@@ -280,18 +307,19 @@ public class DBControll {
      * @return 标题、名字、数字、判断是否已到底
      */
     public Ying_4 getTalk(int number){
-        String SQL = "select titlename,postname,counts from talkview where id = ?";
+        String SQL = "select titlename,postname,counts,posttime from talkview where id = ?";
         int counts = number - 9;
         Ying_4 y = null;
         ArrayList t = new ArrayList();
         ArrayList s = new ArrayList();
         ArrayList p = new ArrayList();
+        ArrayList z = new ArrayList();
         int count = getCounts("select id from talkview");
         try {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
             if (counts > count){
-                return new Ying_4(null,null,null,null,false);
+                return new Ying_4(null,null,null,null,null,false);
             }
             while (counts != number) {
                 pstmt.setInt(1, counts);
@@ -300,6 +328,7 @@ public class DBControll {
                     t.add(rSet.getString("titlename"));
                     s.add(rSet.getString("postname"));
                     p.add(rSet.getInt("counts"));
+                    z.add(rSet.getLong("posttime"));
                     counts += 1;
                 }
                 else {
@@ -307,9 +336,9 @@ public class DBControll {
                 }
             }
             if (counts > count){
-                y = new Ying_4(t,s,p,null,false);
+                y = new Ying_4(t,s,p,null,z,false);
             } else {
-                y = new Ying_4(t,s,p,null,true);
+                y = new Ying_4(t,s,p,null,z,true);
             }
             connection.close();
             pstmt.close();
@@ -372,5 +401,65 @@ public class DBControll {
             DBConection.closeConnection(connection);
         }
         return r;
+    }
+
+    public Ying_5 getTalk (String time, String name, int number){
+        int counts = number - 9;
+        int count = gettotal("select talk_id from maintalk where talk_id = " +
+                "(select id from talkview where posttime = ? and postname = ?)",time,name);
+        if (counts > count){
+            return new Ying_5(null,null,null,null,false);
+        }
+        String SQL = "select title,text,username from maintalk where talk_id = " +
+                "(select id from talkview where posttime = ? and postname = ?)";
+        String SQL_1 = "select level from userinfo where account = ?";
+        connection = DBConection.getConnection();
+        Statement stmt = null;
+        Ying_5 y = null;
+        String t = "";
+        ArrayList s = new ArrayList();
+        ArrayList p = new ArrayList();
+        ArrayList z = new ArrayList();
+        try {
+            connection.setAutoCommit(false);// 更改JDBC事务的默认提交方式
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setString(1, time);
+            preparedStatement.setString(2, name);
+            ResultSet rSet = preparedStatement.executeQuery();
+                if (rSet.next()) {    //判断结果集是否有效
+                    t = (rSet.getString("title"));
+                    s.add(rSet.getString("text"));
+                    p.add(rSet.getString("username"));
+            }
+
+
+            preparedStatement = connection.prepareStatement(SQL_1);
+                for ( int i=0; i < p.size(); i++ ) {
+                    preparedStatement.setString(1, p.get(i).toString());
+                }
+            rSet = preparedStatement.executeQuery();
+            if (rSet.next()) {    //判断结果集是否有效
+                z.add(rSet.getString("level"));
+            }
+            connection.commit();//提交JDBC事务
+            connection.setAutoCommit(true);// 恢复JDBC事务的默认提交方式
+            if (counts > count){
+                y = new Ying_5(t,s,p,z,false);
+            } else {
+                y = new Ying_5(t,s,p,z,true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();//回滚JDBC事务
+                stmt.close();
+                connection.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        } finally {
+            DBConection.closeConnection(connection);
+        }
+        return y;
     }
 }
