@@ -1,6 +1,5 @@
 import GetReq.GetReq;
-import GsonChange.Ying;
-import GsonChange.DataSave;
+import GsonChange.GsonTurn;
 import Session.MySessionContext;
 import com.google.gson.Gson;
 
@@ -18,21 +17,21 @@ import static com.sun.xml.internal.stream.Entity.ScannedEntity.DEFAULT_BUFFER_SI
  */
 public class Login extends HttpServlet{
 
-    private Ying a;
+    private GsonTurn a;
     private Gson gson = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GetReq getReq = new GetReq(req);
         String te = getReq.getGet_from();
-        a = gson.fromJson(te, Ying.class);
+        a = gson.fromJson(te, GsonTurn.class);
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        DataSave dataSave = dbControll.searchAccount(a.getType(),a.getFa());    //放入账号密码得到用户的各种资料
+        GsonTurn dataSave = dbControll.searchAccount(a.getType(),a.getFa());    //放入账号密码得到用户的各种资料
         if (dataSave != null) {
             String name = a.getType();
             String pathname = "/Users/Mario.Hu/Documents/" + name + ".txt";
             File file = new File(pathname);
-            dataSave.setPhoto(file2String(file));   //把图片数据替换到dataSave中
+            dataSave.setType(file2String(file));   //把图片数据替换到dataSave中
             String jsonObject = gson.toJson(dataSave);
             resp.setCharacterEncoding("utf-8"); //编码
             req.getSession().setAttribute(req.getSession().getId(),name);   //登陆后如果没有session则新建一个

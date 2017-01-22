@@ -134,9 +134,9 @@ public class DBControll {
      * @param pass 密码
      * @return 登录成功的话就返回ture，否则返回false
      */
-    public DataSave searchAccount(String acc, String pass) {
+    public GsonTurn searchAccount(String acc, String pass) {
         String SQL = "select photo,level,money from userinfo where account = ? and password = ?";
-        DataSave dataSave = null;
+        GsonTurn dataSave = null;
 
         try {
             connection = DBConection.getConnection();
@@ -145,7 +145,7 @@ public class DBControll {
             pstmt.setString(2, pass);
             ResultSet rSet = pstmt.executeQuery();
             if (rSet.next()) {    //判断结果集是否有效
-                dataSave = new DataSave(rSet.getString("photo"), rSet.getString("level"), rSet.getInt("money"), true);
+                dataSave = new GsonTurn(rSet.getString("photo"), rSet.getString("level"), rSet.getInt("money"), true);
             }
             connection.close();
             pstmt.close();
@@ -191,10 +191,10 @@ public class DBControll {
      * @param number 这一次想要获取那个范围以内的数据
      * @return 新闻的标题、摘要和图片
      */
-    public Ying_3 get_news_summarize(int number){
+    public GsonTurn get_news_summarize(int number){
         String SQL = "select title,summarize,photourl from news where uid = ?";
         int counts = number - 9;
-        Ying_3 y = null;
+        GsonTurn y = null;
         ArrayList t = new ArrayList();
         ArrayList s = new ArrayList();
         ArrayList p = new ArrayList();
@@ -203,7 +203,7 @@ public class DBControll {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
             if (counts > count){
-                return new Ying_3(null,null,null,false);
+                return new GsonTurn(null,null,null,false);
             }
             while (counts != number) {
                 pstmt.setInt(1, counts);
@@ -220,9 +220,9 @@ public class DBControll {
             }
 
             if (counts > count){
-                y = new Ying_3(t,s,p,false);
+                y = new GsonTurn(t,s,p,false);
             } else {
-                y = new Ying_3(t,s,p,true);
+                y = new GsonTurn(t,s,p,true);
             }
             connection.close();
             pstmt.close();
@@ -306,10 +306,10 @@ public class DBControll {
      * @param number 这一次要向数据库提取哪个范围的列表
      * @return 标题、名字、数字、判断是否已到底
      */
-    public Ying_4 getTalk(int number){
+    public GsonTurn getTalk(int number){
         String SQL = "select titlename,postname,counts,posttime from talkview where id = ?";
         int counts = number - 9;
-        Ying_4 y = null;
+        GsonTurn y = null;
         ArrayList t = new ArrayList();
         ArrayList s = new ArrayList();
         ArrayList p = new ArrayList();
@@ -319,7 +319,7 @@ public class DBControll {
             connection = DBConection.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
             if (counts > count){
-                return new Ying_4(null,null,null,null,null,false);
+                return new GsonTurn(null,null,null,null,null,false);
             }
             while (counts != number) {
                 pstmt.setInt(1, counts);
@@ -336,9 +336,9 @@ public class DBControll {
                 }
             }
             if (counts > count){
-                y = new Ying_4(t,s,p,null,z,false);
+                y = new GsonTurn(t,s,p,null,z,false);
             } else {
-                y = new Ying_4(t,s,p,null,z,true);
+                y = new GsonTurn(t,s,p,null,z,true);
             }
             connection.close();
             pstmt.close();
@@ -403,19 +403,19 @@ public class DBControll {
         return r;
     }
 
-    public Ying_5 getTalk (String time, String name, int number){
+    public GsonTurn getTalk (String time, String name, int number){
         int counts = number - 9;
         int count = gettotal("select talk_id from maintalk where talk_id = " +
                 "(select id from talkview where posttime = ? and postname = ?)",time,name);
         if (counts > count){
-            return new Ying_5(null,null,null,null,false);
+            return new GsonTurn(null,null,null,null,false);
         }
         String SQL = "select title,text,username from maintalk where talk_id = " +
                 "(select id from talkview where posttime = ? and postname = ?)";
         String SQL_1 = "select level from userinfo where account = ?";
         connection = DBConection.getConnection();
         Statement stmt = null;
-        Ying_5 y = null;
+        GsonTurn y = null;
         String t = "";
         ArrayList s = new ArrayList();
         ArrayList p = new ArrayList();
@@ -430,6 +430,7 @@ public class DBControll {
                     t = (rSet.getString("title"));
                     s.add(rSet.getString("text"));
                     p.add(rSet.getString("username"));
+                    counts += 1;
             }
 
 
@@ -444,9 +445,9 @@ public class DBControll {
             connection.commit();//提交JDBC事务
             connection.setAutoCommit(true);// 恢复JDBC事务的默认提交方式
             if (counts > count){
-                y = new Ying_5(t,s,p,z,false);
+                y = new GsonTurn(t,s,p,z,false);
             } else {
-                y = new Ying_5(t,s,p,z,true);
+                y = new GsonTurn(t,s,p,z,true);
             }
         } catch (SQLException e) {
             e.printStackTrace();

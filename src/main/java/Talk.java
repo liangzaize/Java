@@ -1,6 +1,5 @@
 import GetReq.GetReq;
-import GsonChange.Yao;
-import GsonChange.Ying_4;
+import GsonChange.GsonTurn;
 import Session.MySessionContext;
 import com.google.gson.Gson;
 
@@ -18,15 +17,15 @@ import java.io.PrintWriter;
  */
 public class Talk extends HttpServlet {
 
-    private Yao a;
+    private GsonTurn a;
     private Gson gson = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GetReq getReq = new GetReq(req);
         String te = getReq.getGet_from();
-        Ying_4 y;
-        a = gson.fromJson(te, Yao.class);
+        GsonTurn y;
+        a = gson.fromJson(te, GsonTurn.class);
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
         if (a.getType().equals("hukangze")){
             if (req.isRequestedSessionIdFromCookie()){
@@ -34,7 +33,7 @@ public class Talk extends HttpServlet {
                 HttpSession session = MySessionContext.getSession(get_session); //重新获取该id对应的session对象
                 String name = session.getAttribute(session.getId()).toString(); //获取该session对象保存的用户名
                 y = dbControll.getTalk(a.getCount());
-                y.setAccount(name);
+                y.setType(name);
             } else {
                 y = dbControll.getTalk(a.getCount());
             }

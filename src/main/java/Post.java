@@ -1,6 +1,5 @@
 import GetReq.GetReq;
-import GsonChange.Result;
-import GsonChange.Ying;
+import GsonChange.GsonTurn;
 import Session.MySessionContext;
 import com.google.gson.Gson;
 
@@ -18,21 +17,21 @@ import java.io.PrintWriter;
  */
 public class Post extends HttpServlet {
 
-    private Ying a;
+    private GsonTurn a;
     private Gson gson = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GetReq getReq = new GetReq(req);
         String te = getReq.getGet_from();
-        a = gson.fromJson(te, Ying.class);
+        a = gson.fromJson(te, GsonTurn.class);
         String get_session = req.getHeader("cookie").substring(11); //获取http头部cookie的值，并且除去sessionid=这几个字符
         HttpSession session = MySessionContext.getSession(get_session); //重新获取该id对应的session对象
         String name = session.getAttribute(session.getId()).toString(); //获取该session对象保存的用户名
         long millis = System.currentTimeMillis();
         DBControll d = new DBControll();
         Boolean r = d.posttalk(a.getType(),a.getFa(),name,millis/1000);
-        Result result = new Result(r);
+        GsonTurn result = new GsonTurn(r);
         String json = gson.toJson(result);
         resp.setCharacterEncoding("utf-8"); //编码
         PrintWriter out = resp.getWriter(); //发送

@@ -1,7 +1,5 @@
 import GetReq.GetReq;
-import GsonChange.DataSave;
-import GsonChange.Result;
-import GsonChange.Ying;
+import GsonChange.GsonTurn;
 import Session.MySessionContext;
 import com.google.gson.Gson;
 
@@ -17,13 +15,13 @@ import java.io.PrintWriter;
  */
 public class Sign extends javax.servlet.http.HttpServlet{
 
-    private Ying a;
+    private GsonTurn a;
     private Gson gson = new Gson();
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GetReq getReq = new GetReq(req);
         String te = getReq.getGet_from();
-        a = gson.fromJson(te, Ying.class);
+        a = gson.fromJson(te, GsonTurn.class);
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
         Boolean returnSign = dbControll.putAccount(a.getType(),a.getFa());
         if (returnSign) {   //如果注册成功
@@ -31,7 +29,7 @@ public class Sign extends javax.servlet.http.HttpServlet{
             MySessionContext.AddSession(req.getSession());
             resp.addHeader("Set-cookie",req.getSession().getId());
         }
-        Result result = new Result(returnSign);
+        GsonTurn result = new GsonTurn(returnSign);
         String json = gson.toJson(result);
         resp.setCharacterEncoding("utf-8"); //编码
         PrintWriter out = resp.getWriter(); //发送

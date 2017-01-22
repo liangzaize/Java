@@ -1,6 +1,5 @@
 import GetReq.GetReq;
-import GsonChange.Ying;
-import GsonChange.Ying_5;
+import GsonChange.GsonTurn;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -16,16 +15,16 @@ import java.io.PrintWriter;
  */
 public class Maintalk extends HttpServlet {
 
-    private Ying a;
+    private GsonTurn a;
     private Gson gson = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GetReq getReq = new GetReq(req);
         String te = getReq.getGet_from();
-        a = gson.fromJson(te, Ying.class);
+        a = gson.fromJson(te, GsonTurn.class);
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        Ying_5 ying_5 = dbControll.getTalk(a.getType(),a.getFa(),a.getCount());
+        GsonTurn ying_5 = dbControll.getTalk(a.getType(),a.getFa(),a.getCount());
         String jsonObject = gson.toJson(ying_5);
         resp.setCharacterEncoding("utf-8"); //编码
         PrintWriter out = resp.getWriter(); //发送

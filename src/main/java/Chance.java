@@ -1,13 +1,11 @@
 import GetReq.GetReq;
-import GsonChange.Result;
-import GsonChange.Ying;
+import GsonChange.GsonTurn;
 import Session.MySessionContext;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -17,14 +15,14 @@ import java.io.PrintWriter;
  */
 public class Chance extends HttpServlet {
 
-    private Ying a;
+    private GsonTurn a;
     private Gson gson = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GetReq getReq = new GetReq(req);
         String te = getReq.getGet_from();
-        a = gson.fromJson(te, Ying.class);
+        a = gson.fromJson(te, GsonTurn.class);
         String get_session = req.getHeader("cookie").substring(11); //获取http头部cookie的值，并且除去sessionid=这几个字符
         HttpSession session = MySessionContext.getSession(get_session); //重新获取该id对应的session对象
         String name = session.getAttribute(session.getId()).toString(); //获取该session对象保存的用户名
@@ -36,7 +34,7 @@ public class Chance extends HttpServlet {
         DBControll dbControll = new DBControll();  //new一个数据库操作的对象
         Boolean F = dbControll.put_photo(pathname, name);   //如果放置成功了就得到true
         if (F) {
-            Result result = new Result(true);
+            GsonTurn result = new GsonTurn(true);
             String jsonObject = gson.toJson(result);    //生成json
             resp.setCharacterEncoding("utf-8"); //编码
             PrintWriter out = resp.getWriter(); //发送
