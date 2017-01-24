@@ -1,5 +1,6 @@
 import GetReq.GetReq;
 import GsonChange.GsonTurn;
+import Session.AccountException;
 import Session.MySessionContext;
 import com.google.gson.Gson;
 
@@ -22,23 +23,27 @@ public class Login extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        GetReq getReq = new GetReq(req);
-        String te = getReq.getGet_from();
-        a = gson.fromJson(te, GsonTurn.class);
-        DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        GsonTurn dataSave = dbControll.searchAccount(a.getType(),a.getFa());    //放入账号密码得到用户的各种资料
-        if (dataSave != null) {
+        String getReq = GetReq.INSTANCE.toString(req);
+        a = gson.fromJson(getReq, GsonTurn.class);
+        String err = "";
+        GsonTurn dataSave;    //放入账号密码得到用户的各种资料
+        try {
+            dataSave = DBControll.INSTANCE.searchAccount(a.getType(),a.getFa());
             String name = a.getType();
             String pathname = "/Users/Mario.Hu/Documents/" + name + ".txt";
             File file = new File(pathname);
             dataSave.setType(file2String(file));   //把图片数据替换到dataSave中
-            String jsonObject = gson.toJson(dataSave);
-            resp.setCharacterEncoding("utf-8"); //编码
+            err = gson.toJson(dataSave);
             req.getSession().setAttribute(req.getSession().getId(),name);   //登陆后如果没有session则新建一个
             MySessionContext.AddSession(req.getSession());  //把该对象放进自建的管理器中
             resp.addHeader("Set-cookie",req.getSession().getId());  //把sessionid放进cookie中发送给客户端
+        } catch (AccountException e) {
+            GsonTurn gsonTurn = new GsonTurn(e.getMessage());
+            err = gson.toJson(gsonTurn);
+        } finally {
+            resp.setCharacterEncoding("utf-8"); //编码
             PrintWriter out = resp.getWriter(); //发送
-            out.print(jsonObject);
+            out.print(err);
             out.flush();
             out.close();
         }

@@ -16,6 +16,10 @@ public class GsonTurn {
         this.Port = port;
     }
 
+    public GsonTurn(String type){
+        this.Type = type;
+    }
+
     public GsonTurn(String type, int count){
         this.Type = type;
         this.Count = count;

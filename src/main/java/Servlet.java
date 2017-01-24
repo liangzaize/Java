@@ -18,11 +18,9 @@ public class Servlet extends javax.servlet.http.HttpServlet {
 
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response)
             throws javax.servlet.ServletException, IOException {
-        GetReq getReq = new GetReq(request);    //用来读取输入流的类
-        String params = getReq.getGet_from();
-        a = gson.fromJson(params, GsonTurn.class);  //利用Ying的类来解析送来的型号
-        DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        String xianka = dbControll.requsetxianka(a.getType());  //拿出Type中的数据然后交给数据库操作，之后从数据库中取出对应数据
+        String getReq = GetReq.INSTANCE.toString(request);
+        a = gson.fromJson(getReq, GsonTurn.class);  //利用Ying的类来解析送来的型号
+        String xianka = DBControll.INSTANCE.requsetxianka(a.getType());  //拿出Type中的数据然后交给数据库操作，之后从数据库中取出对应数据
         DBtoArray dBtoArray = new DBtoArray();  //这是把数据调整成我们需要的格式
         dBtoArray.setDb(xianka);
         ArrayList g = dBtoArray.getDb();    //调整完后就是一个ArrayList类型

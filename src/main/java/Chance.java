@@ -20,9 +20,8 @@ public class Chance extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        GetReq getReq = new GetReq(req);
-        String te = getReq.getGet_from();
-        a = gson.fromJson(te, GsonTurn.class);
+        String getReq = GetReq.INSTANCE.toString(req);
+        a = gson.fromJson(getReq, GsonTurn.class);
         String get_session = req.getHeader("cookie").substring(11); //获取http头部cookie的值，并且除去sessionid=这几个字符
         HttpSession session = MySessionContext.getSession(get_session); //重新获取该id对应的session对象
         String name = session.getAttribute(session.getId()).toString(); //获取该session对象保存的用户名
@@ -31,8 +30,7 @@ public class Chance extends HttpServlet {
         try (PrintWriter output = new PrintWriter(file)) {
             output.print(a.getType());
         }
-        DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        Boolean F = dbControll.put_photo(pathname, name);   //如果放置成功了就得到true
+        Boolean F = DBControll.INSTANCE.put_photo(pathname, name);   //如果放置成功了就得到true
         if (F) {
             GsonTurn result = new GsonTurn(true);
             String jsonObject = gson.toJson(result);    //生成json

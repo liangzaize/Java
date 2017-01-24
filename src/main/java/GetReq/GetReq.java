@@ -4,27 +4,28 @@ package GetReq;
  * Created by Mario.Hu on 28/12/2016.
  * 获取数据流的封装
  */
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class GetReq {
+public enum GetReq {
+    INSTANCE;
 
     private HttpServletRequest get_from;
-    private String from;
 
-    public GetReq (HttpServletRequest req){
-        super();
-        this.get_from = req;    //从客户端接收到的HttpServletRequest数据放在这
+    GetReq(){
     }
 
-    public String getGet_from() {
-        getorgo();
-        return from;
+    public String toString(HttpServletRequest httpServletRequest){
+        this.get_from = httpServletRequest;
+        return getorgo();
     }
 
-    private void getorgo(){
+    private String getorgo(){
+        String from = "";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(get_from.getInputStream(), "utf-8"));
             StringBuilder sb = new StringBuilder("");
@@ -33,10 +34,11 @@ public class GetReq {
                 sb.append(temp);
             }
             br.close();
-            this.from = sb.toString();  //把接收的信息转换成string类型
+            from = sb.toString();  //把接收的信息转换成string类型
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return from;
     }
 
 }

@@ -4,12 +4,15 @@
  */
 
 import GsonChange.*;
+import Session.AccountException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class DBControll {
+public enum  DBControll {
+
+    INSTANCE;
 
     private String out = "";
     private Connection connection = null;
@@ -72,8 +75,7 @@ public class DBControll {
      * @param acc 账号
      * @return 如果账号不存在就返回false，否则返回true
      */
-    private Boolean foundAccount(String acc) {
-        Boolean si = true;
+    private void foundAccount(String acc) {
         String SQL = "select account from userinfo where account = ?";
         try {
             connection = DBConection.getConnection();
@@ -81,16 +83,15 @@ public class DBControll {
             pstmt.setString(1, acc);
             ResultSet rSet = pstmt.executeQuery();
             if (rSet.next()) {    //判断结果集是否有效
-                si = false;
+                throw new AccountException("用户已存在");
             }
             connection.close();
             pstmt.close();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             DBConection.closeConnection(connection);
         }
-        return si;
     }
 
     /***
@@ -99,10 +100,12 @@ public class DBControll {
      * @param pass 密码
      * @return ture的话就是注册成功，false就是失败了
      */
-    public Boolean putAccount(String acc, String pass) {
-        Boolean chao = false;
-        Boolean chaos = foundAccount(acc);
-        if (chaos) {
+    public void putAccount(String acc, String pass) {
+        try {
+            foundAccount(acc);
+        } catch (AccountException e) {
+            throw new AccountException("用户已存在");
+        }
             String SQL = "insert into userinfo values( ? , ? , ? , ? , ? )";
 
             try {
@@ -114,9 +117,6 @@ public class DBControll {
                 preparedStatement.setString(4, "懵懂菜鸟");
                 preparedStatement.setInt(5, 0);
                 Integer a = preparedStatement.executeUpdate();
-                if (a > 0) {
-                    chao = true;
-                }
                 connection.close();
                 preparedStatement.close();
             } catch (SQLException e) {
@@ -124,8 +124,6 @@ public class DBControll {
             } finally {
                 DBConection.closeConnection(connection);
             }
-        }
-        return chao;
     }
 
     /***
@@ -153,6 +151,9 @@ public class DBControll {
             e.printStackTrace();
         } finally {
             DBConection.closeConnection(connection);
+        }
+        if (dataSave == null){
+            throw new AccountException("账号/密码错误");
         }
         return dataSave;
     }

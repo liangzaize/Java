@@ -20,11 +20,9 @@ public class Maintalk extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        GetReq getReq = new GetReq(req);
-        String te = getReq.getGet_from();
-        a = gson.fromJson(te, GsonTurn.class);
-        DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        GsonTurn ying_5 = dbControll.getTalk(a.getType(),a.getFa(),a.getCount());
+        String getReq = GetReq.INSTANCE.toString(req);
+        a = gson.fromJson(getReq, GsonTurn.class);
+        GsonTurn ying_5 = DBControll.INSTANCE.getTalk(a.getType(),a.getFa(),a.getCount());
         String jsonObject = gson.toJson(ying_5);
         resp.setCharacterEncoding("utf-8"); //编码
         PrintWriter out = resp.getWriter(); //发送

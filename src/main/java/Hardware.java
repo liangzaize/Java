@@ -20,12 +20,10 @@ public class Hardware extends javax.servlet.http.HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        GetReq getReq = new GetReq(req);
+        String getReq = GetReq.INSTANCE.toString(req);
         Zol zol = new Zol();
-        String te = getReq.getGet_from();
-        a = gson.fromJson(te, GsonTurn.class);
-        DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        String xianka = dbControll.requseturl(a.getType(),a.getFa());   //把账号和密码放进数据库
+        a = gson.fromJson(getReq, GsonTurn.class);
+        String xianka = DBControll.INSTANCE.requseturl(a.getType(),a.getFa());   //把账号和密码放进数据库
         zol.Zol_Get(xianka);    //把地址传去抓代码
         ArrayList a = zol.getOutZol();  //详细信息
         ArrayList b = zol.getOutZol_1();    //类别信息

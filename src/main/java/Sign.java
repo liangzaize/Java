@@ -1,5 +1,6 @@
 import GetReq.GetReq;
 import GsonChange.GsonTurn;
+import Session.AccountException;
 import Session.MySessionContext;
 import com.google.gson.Gson;
 
@@ -19,21 +20,24 @@ public class Sign extends javax.servlet.http.HttpServlet{
     private Gson gson = new Gson();
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        GetReq getReq = new GetReq(req);
-        String te = getReq.getGet_from();
-        a = gson.fromJson(te, GsonTurn.class);
-        DBControll dbControll = new DBControll();  //new一个数据库操作的对象
-        Boolean returnSign = dbControll.putAccount(a.getType(),a.getFa());
-        if (returnSign) {   //如果注册成功
+        String getReq = GetReq.INSTANCE.toString(req);
+        a = gson.fromJson(getReq, GsonTurn.class);
+        String err;
+        GsonTurn result;
+        try {
+            DBControll.INSTANCE.putAccount(a.getType(),a.getFa());
             req.getSession().setAttribute(req.getSession().getId(),a.getType());    //为该用户新建一个session
             MySessionContext.AddSession(req.getSession());
             resp.addHeader("Set-cookie",req.getSession().getId());
+            result = new GsonTurn(true);
+            err= gson.toJson(result);
+        } catch (AccountException e) {
+            result = new GsonTurn(e.getMessage());
+            err = gson.toJson(result);
         }
-        GsonTurn result = new GsonTurn(returnSign);
-        String json = gson.toJson(result);
         resp.setCharacterEncoding("utf-8"); //编码
         PrintWriter out = resp.getWriter(); //发送
-        out.print(json);
+        out.print(err);
         out.flush();
         out.close();
     }
