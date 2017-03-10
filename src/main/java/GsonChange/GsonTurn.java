@@ -63,14 +63,6 @@ public class GsonTurn {
         this.Port = port;
     }
 
-    public GsonTurn(String type,ArrayList head, ArrayList body,ArrayList image,Boolean port){
-        this.Type = type;
-        this.Head = head;
-        this.Body = body;
-        this.Image = image;
-        this.Port = port;
-    }
-
     public int getCount() {
         return Count;
     }

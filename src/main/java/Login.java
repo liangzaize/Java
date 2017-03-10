@@ -28,7 +28,8 @@ public class Login extends HttpServlet{
         String err = "";
         GsonTurn dataSave;    //放入账号密码得到用户的各种资料
         try {
-            dataSave = DBControll.INSTANCE.searchAccount(a.getType(),a.getFa());
+            DBControll db = new DBControll();
+            dataSave = db.searchAccount(a.getType(),a.getFa());
             String name = a.getType();
             String pathname = "/Users/Mario.Hu/Documents/" + name + ".txt";
             File file = new File(pathname);

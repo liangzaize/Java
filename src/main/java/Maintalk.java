@@ -1,5 +1,6 @@
 import GetReq.GetReq;
 import GsonChange.GsonTurn;
+import GsonChange.GsonTurn_1;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -22,7 +23,8 @@ public class Maintalk extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String getReq = GetReq.INSTANCE.toString(req);
         a = gson.fromJson(getReq, GsonTurn.class);
-        GsonTurn ying_5 = DBControll.INSTANCE.getTalk(a.getType(),a.getFa(),a.getCount());
+        DBControll db = new DBControll();
+        GsonTurn_1 ying_5 = db.getTalk(a.getType(),a.getFa(),a.getCount());
         String jsonObject = gson.toJson(ying_5);
         resp.setCharacterEncoding("utf-8"); //编码
         PrintWriter out = resp.getWriter(); //发送

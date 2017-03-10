@@ -25,7 +25,8 @@ public class Sign extends javax.servlet.http.HttpServlet{
         String err;
         GsonTurn result;
         try {
-            DBControll.INSTANCE.putAccount(a.getType(),a.getFa());
+            DBControll db = new DBControll();
+            db.putAccount(a.getType(),a.getFa());
             req.getSession().setAttribute(req.getSession().getId(),a.getType());    //为该用户新建一个session
             MySessionContext.AddSession(req.getSession());
             resp.addHeader("Set-cookie",req.getSession().getId());

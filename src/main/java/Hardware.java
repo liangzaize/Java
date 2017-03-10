@@ -23,7 +23,8 @@ public class Hardware extends javax.servlet.http.HttpServlet {
         String getReq = GetReq.INSTANCE.toString(req);
         Zol zol = new Zol();
         a = gson.fromJson(getReq, GsonTurn.class);
-        String xianka = DBControll.INSTANCE.requseturl(a.getType(),a.getFa());   //把账号和密码放进数据库
+        DBControll db = new DBControll();
+        String xianka = db.requseturl(a.getType(),a.getFa());   //把账号和密码放进数据库
         zol.Zol_Get(xianka);    //把地址传去抓代码
         ArrayList a = zol.getOutZol();  //详细信息
         ArrayList b = zol.getOutZol_1();    //类别信息

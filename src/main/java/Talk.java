@@ -25,15 +25,16 @@ public class Talk extends HttpServlet {
         String getReq = GetReq.INSTANCE.toString(req);
         GsonTurn y;
         a = gson.fromJson(getReq, GsonTurn.class);
+        DBControll db = new DBControll();
         if (a.getType().equals("hukangze")){
             if (req.isRequestedSessionIdFromCookie()){
                 String get_session = req.getHeader("cookie").substring(11); //获取http头部cookie的值，并且除去sessionid=这几个字符
                 HttpSession session = MySessionContext.getSession(get_session); //重新获取该id对应的session对象
                 String name = session.getAttribute(session.getId()).toString(); //获取该session对象保存的用户名
-                y = DBControll.INSTANCE.getTalk(a.getCount());
+                y = db.getTalk(a.getCount());
                 y.setType(name);
             } else {
-                y = DBControll.INSTANCE.getTalk(a.getCount());
+                y = db.getTalk(a.getCount());
             }
             String jsonObject = gson.toJson(y);
             resp.setCharacterEncoding("utf-8"); //编码

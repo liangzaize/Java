@@ -22,7 +22,8 @@ public class News extends HttpServlet {
         String getReq = GetReq.INSTANCE.toString(req);
         a = gson.fromJson(getReq, GsonTurn.class);
         if (a.getType().equals("hukangze")){
-            GsonTurn ying_3 = DBControll.INSTANCE.get_news_summarize(a.getCount());
+            DBControll db = new DBControll();
+            GsonTurn ying_3 = db.get_news_summarize(a.getCount());
             String jsonObject = gson.toJson(ying_3);
             resp.setCharacterEncoding("utf-8"); //编码
             PrintWriter out = resp.getWriter(); //发送

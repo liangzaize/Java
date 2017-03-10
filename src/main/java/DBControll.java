@@ -10,9 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public enum  DBControll {
-
-    INSTANCE;
+public class DBControll {
 
     private String out = "";
     private Connection connection = null;
@@ -106,7 +104,7 @@ public enum  DBControll {
         } catch (AccountException e) {
             throw new AccountException("用户已存在");
         }
-            String SQL = "insert into userinfo values( ? , ? , ? , ? , ? )";
+            String SQL = "insert (account,password,photo,level,meney) into userinfo values( ? , ? , ? , ? , ? )";
 
             try {
                 connection = DBConection.getConnection();
@@ -280,28 +278,6 @@ public enum  DBControll {
         return number;
     }
 
-//    public String get_news(String title, String data){
-//        String SQL = "select jsp from news where title = ? and summarize = ?";
-//        String jsp = "";
-//        try {
-//            connection = DBConection.getConnection();
-//            PreparedStatement pstmt = connection.prepareStatement(SQL);
-//            pstmt.setString(1, title);
-//            pstmt.setString(2, data);
-//            ResultSet rSet = pstmt.executeQuery();
-//                if (rSet.next()) {    //判断结果集是否有效
-//                    jsp = rSet.getString("jsp");
-//                }
-//            connection.close();
-//            pstmt.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            DBConection.closeConnection(connection);
-//        }
-//        return jsp;
-//    }
-
     /***
      * 获取论坛列表
      * @param number 这一次要向数据库提取哪个范围的列表
@@ -404,23 +380,31 @@ public enum  DBControll {
         return r;
     }
 
-    public GsonTurn getTalk (String time, String name, int number){
+    /**
+     * 帖子列表
+     * @param time  发送时的时间
+     * @param name  发送人名字
+     * @param number
+     * @return
+     */
+    public GsonTurn_1 getTalk (String time, String name, int number){
         int counts = number - 9;
         int count = gettotal("select talk_id from maintalk where talk_id = " +
                 "(select id from talkview where posttime = ? and postname = ?)",time,name);
         if (counts > count){
-            return new GsonTurn(null,null,null,null,false);
+            return new GsonTurn_1(null,null,null,null,null,false);
         }
         String SQL = "select title,text,username from maintalk where talk_id = " +
                 "(select id from talkview where posttime = ? and postname = ?)";
-        String SQL_1 = "select level from userinfo where account = ?";
+        String SQL_1 = "select level,id from userinfo where account = ?";
         connection = DBConection.getConnection();
         Statement stmt = null;
-        GsonTurn y = null;
+        GsonTurn_1 y = null;
         String t = "";
         ArrayList s = new ArrayList();
         ArrayList p = new ArrayList();
         ArrayList z = new ArrayList();
+        ArrayList x = new ArrayList();
         try {
             connection.setAutoCommit(false);// 更改JDBC事务的默认提交方式
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
@@ -432,9 +416,7 @@ public enum  DBControll {
                     s.add(rSet.getString("text"));
                     p.add(rSet.getString("username"));
                     counts += 1;
-            }
-
-
+                }
             preparedStatement = connection.prepareStatement(SQL_1);
                 for ( int i=0; i < p.size(); i++ ) {
                     preparedStatement.setString(1, p.get(i).toString());
@@ -442,13 +424,14 @@ public enum  DBControll {
             rSet = preparedStatement.executeQuery();
             if (rSet.next()) {    //判断结果集是否有效
                 z.add(rSet.getString("level"));
+                x.add(rSet.getInt("id"));
             }
             connection.commit();//提交JDBC事务
             connection.setAutoCommit(true);// 恢复JDBC事务的默认提交方式
             if (counts > count){
-                y = new GsonTurn(t,s,p,z,false);
+                y = new GsonTurn_1(t,s,p,z,x,false);
             } else {
-                y = new GsonTurn(t,s,p,z,true);
+                y = new GsonTurn_1(t,s,p,z,x,true);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -463,5 +446,27 @@ public enum  DBControll {
             DBConection.closeConnection(connection);
         }
         return y;
+    }
+
+    public int findID(String name){
+        String SQL = "select id from userinfo where account = ?";
+        int id = 0;
+        try {
+            connection = DBConection.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+            pstmt.setString(1, name);
+            ResultSet rSet = pstmt.executeQuery();
+            if (rSet.next()) {    //判断结果集是否有效
+                id = rSet.getInt("id");
+                System.out.println(id);
+            }
+            connection.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConection.closeConnection(connection);
+        }
+        return id;
     }
 }
