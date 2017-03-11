@@ -3,6 +3,7 @@ import GsonChange.GsonTurn;
 import Session.AccountException;
 import Session.MySessionContext;
 import com.google.gson.Gson;
+import sun.misc.BASE64Encoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -30,10 +31,10 @@ public class Login extends HttpServlet{
         try {
             DBControll db = new DBControll();
             dataSave = db.searchAccount(a.getType(),a.getFa());
+            String id = Integer.toString(db.findID(a.getType()));
+            String pathname = "/Users/Mario.Hu/Desktop/aa/target/aa/pict/" + id + ".jpg";
             String name = a.getType();
-            String pathname = "/Users/Mario.Hu/Documents/" + name + ".txt";
-            File file = new File(pathname);
-            dataSave.setType(file2String(file));   //把图片数据替换到dataSave中
+            dataSave.setType(file2String(pathname));   //把图片数据替换到dataSave中
             err = gson.toJson(dataSave);
             req.getSession().setAttribute(req.getSession().getId(),name);   //登陆后如果没有session则新建一个
             MySessionContext.AddSession(req.getSession());  //把该对象放进自建的管理器中
@@ -50,28 +51,23 @@ public class Login extends HttpServlet{
         }
     }
 
-    public static String file2String(File file) {
-        InputStreamReader reader = null;
-        StringWriter writer = new StringWriter();
-        try {
-            reader = new InputStreamReader(new FileInputStream(file), "utf-8");
-            //将输入流写入输出流
-            char[] buffer = new char[DEFAULT_BUFFER_SIZE];
-            int n;
-            while (-1 != (n = reader.read(buffer))) {
-                writer.write(buffer, 0, n);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            if (reader != null)
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    public static String file2String(String file) {
+        InputStream in;
+        byte[] data = null;
+        //读取图片字节数组
+        try
+        {
+            in = new FileInputStream(file);
+            data = new byte[in.available()];
+            in.read(data);
+            in.close();
         }
-        return writer.toString();
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        //对字节数组Base64编码
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(data);//返回Base64编码过的字节数组字符串
     }
 }

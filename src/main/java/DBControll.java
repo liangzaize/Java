@@ -458,7 +458,6 @@ public class DBControll {
             ResultSet rSet = pstmt.executeQuery();
             if (rSet.next()) {    //判断结果集是否有效
                 id = rSet.getInt("id");
-                System.out.println(id);
             }
             connection.close();
             pstmt.close();
