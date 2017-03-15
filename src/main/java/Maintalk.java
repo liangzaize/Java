@@ -1,12 +1,14 @@
 import GetReq.GetReq;
 import GsonChange.GsonTurn;
 import GsonChange.GsonTurn_1;
+import Session.MySessionContext;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -21,7 +23,7 @@ public class Maintalk extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String getReq = GetReq.INSTANCE.toString(req);
+        String getReq = new GetReq().toString(req);
         a = gson.fromJson(getReq, GsonTurn.class);
         DBControll db = new DBControll();
         GsonTurn_1 ying_5 = db.getTalk(a.getType(),a.getFa(),a.getCount());

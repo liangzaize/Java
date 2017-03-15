@@ -24,7 +24,7 @@ public class Login extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String getReq = GetReq.INSTANCE.toString(req);
+        String getReq = new GetReq().toString(req);
         a = gson.fromJson(getReq, GsonTurn.class);
         String err = "";
         GsonTurn dataSave;    //放入账号密码得到用户的各种资料

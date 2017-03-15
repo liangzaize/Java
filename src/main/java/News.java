@@ -19,7 +19,7 @@ public class News extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String getReq = GetReq.INSTANCE.toString(req);
+        String getReq = new GetReq().toString(req);
         a = gson.fromJson(getReq, GsonTurn.class);
         if (a.getType().equals("hukangze")){
             DBControll db = new DBControll();

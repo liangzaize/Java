@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLSyntaxErrorException;
 
 /**
  * Created by Mario.Hu on 03/01/2017.
@@ -20,7 +21,7 @@ public class Sign extends javax.servlet.http.HttpServlet{
     private Gson gson = new Gson();
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String getReq = GetReq.INSTANCE.toString(req);
+        String getReq = new GetReq().toString(req);
         a = gson.fromJson(getReq, GsonTurn.class);
         String err;
         GsonTurn result;

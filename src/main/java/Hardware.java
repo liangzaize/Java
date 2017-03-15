@@ -20,7 +20,7 @@ public class Hardware extends javax.servlet.http.HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String getReq = GetReq.INSTANCE.toString(req);
+        String getReq = new GetReq().toString(req);
         Zol zol = new Zol();
         a = gson.fromJson(getReq, GsonTurn.class);
         DBControll db = new DBControll();

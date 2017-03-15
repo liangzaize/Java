@@ -12,10 +12,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * 保存接收到的帖子内容
- * Created by Mario.Hu on 16/01/2017.
+ * Created by Mario.Hu on 15/03/2017.
  */
-public class Post extends HttpServlet {
+public class Reply extends HttpServlet {
 
     private GsonTurn a;
     private Gson gson = new Gson();
@@ -27,9 +26,9 @@ public class Post extends HttpServlet {
         String get_session = req.getHeader("cookie").substring(11); //获取http头部cookie的值，并且除去sessionid=这几个字符
         HttpSession session = MySessionContext.getSession(get_session); //重新获取该id对应的session对象
         String name = session.getAttribute(session.getId()).toString(); //获取该session对象保存的用户名
-        long millis = System.currentTimeMillis();
         DBControll db = new DBControll();
-        Boolean r = db.posttalk(a.getType(),a.getFa(),name,millis/1000);
+        long millis = System.currentTimeMillis();
+        Boolean r = db.reply(a.getFa(),a.getType(),name,millis/1000);
         GsonTurn result = new GsonTurn(r);
         String json = gson.toJson(result);
         resp.setCharacterEncoding("utf-8"); //编码

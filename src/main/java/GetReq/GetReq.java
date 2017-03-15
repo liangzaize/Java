@@ -11,13 +11,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public enum GetReq {
-    INSTANCE;
+public class GetReq {
 
     private HttpServletRequest get_from;
-
-    GetReq(){
-    }
 
     public String toString(HttpServletRequest httpServletRequest){
         this.get_from = httpServletRequest;
@@ -40,5 +36,4 @@ public enum GetReq {
         }
         return from;
     }
-
 }

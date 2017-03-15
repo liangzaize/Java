@@ -19,7 +19,7 @@ public class Chance extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String getReq = GetReq.INSTANCE.toString(req);
+        String getReq = new GetReq().toString(req);
         a = gson.fromJson(getReq, GsonTurn.class);
         String get_session = req.getHeader("cookie").substring(11); //获取http头部cookie的值，并且除去sessionid=这几个字符
         HttpSession session = MySessionContext.getSession(get_session); //重新获取该id对应的session对象

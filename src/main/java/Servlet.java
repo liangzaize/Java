@@ -18,7 +18,7 @@ public class Servlet extends javax.servlet.http.HttpServlet {
 
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response)
             throws javax.servlet.ServletException, IOException {
-        String getReq = GetReq.INSTANCE.toString(request);
+        String getReq = new GetReq().toString(request);
         a = gson.fromJson(getReq, GsonTurn.class);  //利用Ying的类来解析送来的型号
         DBControll db = new DBControll();
         String xianka = db.requsetxianka(a.getType());  //拿出Type中的数据然后交给数据库操作，之后从数据库中取出对应数据

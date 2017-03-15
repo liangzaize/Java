@@ -104,21 +104,18 @@ public class DBControll {
         } catch (AccountException e) {
             throw new AccountException("用户已存在");
         }
-            String SQL = "insert (account,password,photo,level,meney) into userinfo values( ? , ? , ? , ? , ? )";
+            String SQL = "insert into userinfo(account,password) values( ? , ? )";
 
             try {
                 connection = DBConection.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(SQL);
                 preparedStatement.setString(1, acc);
                 preparedStatement.setString(2, pass);
-                preparedStatement.setString(3, "null");
-                preparedStatement.setString(4, "懵懂菜鸟");
-                preparedStatement.setInt(5, 0);
                 Integer a = preparedStatement.executeUpdate();
                 connection.close();
                 preparedStatement.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new AccountException("服务器内部发生错误");
             } finally {
                 DBConection.closeConnection(connection);
             }
@@ -381,6 +378,58 @@ public class DBControll {
     }
 
     /**
+     * 回复主题
+     * @param title
+     * @param topic
+     * @param name
+     * @return
+     */
+    public Boolean reply(String title,String topic,String name,long time){
+        connection = DBConection.getConnection();
+        Statement stmt = null;
+        Boolean r = true;
+        String SQL_1 = "update talkview set counts = counts + 1,posttime = ? where titlename = ?";
+        String SQL_2 = "insert into maintalk(title,text,username,talk_id) values(? , ? , ? , ?)";
+        String SQL_3 = "select talk_id from maintalk where title = ?";
+        try {
+            connection.setAutoCommit(false);// 更改JDBC事务的默认提交方式
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_1);
+            preparedStatement.setLong(1,time);
+            preparedStatement.setString(2, title);
+            Integer a = preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement(SQL_3);
+            preparedStatement.setString(1,title);
+            ResultSet result = preparedStatement.executeQuery();
+            Integer id = 0; // This will be the id you will add on your talk_id
+            if(result.next()) {
+                id = result.getInt(1);
+            }
+            preparedStatement = connection.prepareStatement(SQL_2);
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, topic);
+            preparedStatement.setString(3, name);
+            preparedStatement.setInt(4, id);
+            Integer b = preparedStatement.executeUpdate();
+            connection.commit();//提交JDBC事务
+            connection.setAutoCommit(true);// 恢复JDBC事务的默认提交方式
+        } catch (SQLException sqle) {
+            try {
+                connection.rollback();//回滚JDBC事务
+                stmt.close();
+                connection.close();
+                r = false;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            sqle.printStackTrace();
+        } finally {
+            DBConection.closeConnection(connection);
+        }
+        return r;
+    }
+
+    /**
      * 帖子列表
      * @param time  发送时的时间
      * @param name  发送人名字
@@ -411,7 +460,7 @@ public class DBControll {
             preparedStatement.setString(1, time);
             preparedStatement.setString(2, name);
             ResultSet rSet = preparedStatement.executeQuery();
-                if (rSet.next()) {    //判断结果集是否有效
+                while (rSet.next()) {    //判断结果集是否有效
                     t = (rSet.getString("title"));
                     s.add(rSet.getString("text"));
                     p.add(rSet.getString("username"));
@@ -420,17 +469,18 @@ public class DBControll {
             preparedStatement = connection.prepareStatement(SQL_1);
                 for ( int i=0; i < p.size(); i++ ) {
                     preparedStatement.setString(1, p.get(i).toString());
+                    rSet = preparedStatement.executeQuery();
+                    if (rSet.next()) {    //判断结果集是否有效
+                        z.add(rSet.getString("level"));
+                        x.add(rSet.getInt("id"));
+                    }
                 }
-            rSet = preparedStatement.executeQuery();
-            if (rSet.next()) {    //判断结果集是否有效
-                z.add(rSet.getString("level"));
-                x.add(rSet.getInt("id"));
-            }
             connection.commit();//提交JDBC事务
             connection.setAutoCommit(true);// 恢复JDBC事务的默认提交方式
             if (counts > count){
                 y = new GsonTurn_1(t,s,p,z,x,false);
             } else {
+                System.out.println(s);
                 y = new GsonTurn_1(t,s,p,z,x,true);
             }
         } catch (SQLException e) {
