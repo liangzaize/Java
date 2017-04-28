@@ -64,6 +64,10 @@
     <servlet-class>Reply</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>Cancel</servlet-name>
+    <servlet-class>Cancel</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>Servlet</servlet-name>
     <url-pattern>/a</url-pattern>
@@ -117,5 +121,10 @@
   <servlet-mapping>
     <servlet-name>Reply</servlet-name>
     <url-pattern>/reply</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Cancel</servlet-name>
+    <url-pattern>/cencel</url-pattern>
   </servlet-mapping>
 </web-app>
